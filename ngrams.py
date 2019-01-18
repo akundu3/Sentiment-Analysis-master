@@ -1,26 +1,15 @@
 
 import pickle
 dataset = pickle.load(open('dataset.pkl', 'rb'))
-
-
-# In[29]:
-
 from collections import Counter
 
 
 # ** 2.) Filter dataset. **
 
-# In[54]:
-
 # Remove dataset that don't have a description.
 filtered_dataset = [t for t in dataset if t['description']]
 print '%d / %d dataset have description' % (len(filtered_dataset), len(dataset))
 
-
-
-
-
-# In[185]:
 
 # Sidebar: difference between lists and generators (iterators)
 
@@ -34,8 +23,6 @@ sublist2 = (i for i in x if i % 2 == 0)
 
 # **3.) Tokenize dataset. **
 
-# In[153]:
-
 # This time, we'll use sklearn's built in tokenization.
 from sklearn.feature_extraction.text import TfidfVectorizer
 def tokenize(dataset, vectorizer):
@@ -47,8 +34,6 @@ X = tokenize(filtered_dataset, TfidfVectorizer())
 
 
 # ** 4.) Compute cross validation accuracy. **
-
-# In[154]:
 
 from sklearn.cross_validation import cross_val_score
 from sklearn.cross_validation import KFold
@@ -63,13 +48,8 @@ print do_cv(X, y)
 
 # ** 5.) Compare different preprocessing decisions. **
 
-# In[155]:
-
 print do_cv(tokenize(filtered_dataset, TfidfVectorizer()), y)
 print do_cv(tokenize(filtered_dataset, TfidfVectorizer(min_df=10)), y)
-
-
-# In[156]:
 
 # How does filtering rare words affect accuracy?
 import matplotlib.pyplot as plt
@@ -85,9 +65,6 @@ def compare_mindf(dataset, y):
     plt.show()
         
 compare_mindf(filtered_dataset, y)
-
-
-# In[158]:
 
 # How does filtering common words affect accuracy?
 import matplotlib.pyplot as plt
@@ -105,9 +82,6 @@ def compare_maxdf(dataset, y):
     plt.show()
         
 compare_maxdf(filtered_dataset, y)
-
-
-# In[161]:
 
 # How does using ngrams help?
 import matplotlib.pyplot as plt
@@ -127,9 +101,6 @@ def compare_ngrams(dataset, y):
         
 compare_ngrams(filtered_dataset, y)
 
-
-# In[162]:
-
 # Does binary/freq help?
 def compare_binary(dataset, y):
     accuracies = []
@@ -145,9 +116,6 @@ def compare_binary(dataset, y):
     plt.show()
         
 compare_binary(filtered_dataset, y)
-
-
-# In[163]:
 
 # Does idf help?
 def compare_idf(dataset, y):
@@ -165,9 +133,6 @@ def compare_idf(dataset, y):
         
 compare_idf(filtered_dataset, y)
 
-
-# In[164]:
-
 # Do stop words help?
 def compare_stopwords(dataset, y):
     accuracies = []
@@ -184,9 +149,6 @@ def compare_stopwords(dataset, y):
     plt.show()
         
 compare_stopwords(filtered_dataset, y)
-
-
-# In[125]:
 
 # Do GridSearch on all parameters.
 from sklearn.grid_search import GridSearchCV
@@ -220,13 +182,7 @@ best_parameters = grid_search.best_estimator_.get_params()
 for param_name in sorted(parameters.keys()):
     print("\t%s: %r" % (param_name, best_parameters[param_name]))
 
-
-# In[130]:
-
 print '\n'.join(str(x) for x in grid_search.grid_scores_)
-
-
-# In[175]:
 
 # What are top terms?
 def print_top_terms(C, vectorizer, dataset, y, n=30):
@@ -241,8 +197,6 @@ def print_top_terms(C, vectorizer, dataset, y, n=30):
     
 print_top_terms(1, TfidfVectorizer(min_df=2, ngram_range=(1,3)), filtered_dataset, y)
 
-
-# In[172]:
 
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
@@ -269,8 +223,4 @@ for param_name in sorted(parameters.keys()):
     print("\t%s: %r" % (param_name, best_parameters[param_name]))
 
 
-# In[173]:
-
 print '\n'.join(str(x) for x in grid_search.grid_scores_)
-
-
